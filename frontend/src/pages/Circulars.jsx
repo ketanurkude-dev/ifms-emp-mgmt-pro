@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { get, post } from "../api/apiService";
 import { useCurrentEmployee } from "../api/useCurrentEmployee";
+import { useLanguage } from "../i18n/LanguageContext";
 import AppLayout from "./AppLayout";
 
 const emptyForm = { title: "", category: "General", issuing_office: "", content: "", requires_ack: false };
 
 export default function Circulars() {
+  const { t } = useLanguage();
   const employee = useCurrentEmployee();
   const isApprover = employee && (employee.role === "ddo" || employee.role === "hod");
   const [circulars, setCirculars] = useState(null);
@@ -42,10 +44,10 @@ export default function Circulars() {
       <div className="space-y-6">
         {isApprover && (
           <div className="bg-white border border-slate-200 rounded p-6">
-            <h1 className="font-semibold text-slate-800 mb-1">Publish a circular</h1>
+            <h1 className="font-semibold text-slate-800 mb-1">{t("publishCircular")}</h1>
             <form onSubmit={handleCreate} className="grid sm:grid-cols-2 gap-4 max-w-2xl mt-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Title</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">{t("title")}</label>
                 <input
                   className="w-full border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"
                   value={form.title}
@@ -54,7 +56,7 @@ export default function Circulars() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Issuing office</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">{t("issuingOffice")}</label>
                 <input
                   className="w-full border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"
                   value={form.issuing_office}
@@ -63,7 +65,7 @@ export default function Circulars() {
                 />
               </div>
               <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Content</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">{t("content")}</label>
                 <textarea
                   rows={3}
                   className="w-full border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"
@@ -78,7 +80,7 @@ export default function Circulars() {
                   checked={form.requires_ack}
                   onChange={(e) => setForm({ ...form, requires_ack: e.target.checked })}
                 />
-                Requires acknowledgement
+                {t("requiresAck")}
               </label>
               <div className="sm:col-span-2">
                 <button
@@ -86,7 +88,7 @@ export default function Circulars() {
                   disabled={submitting}
                   className="bg-teal-800 text-white px-4 py-2 rounded text-sm font-medium hover:bg-teal-900 disabled:opacity-60"
                 >
-                  {submitting ? "Publishing..." : "Publish"}
+                  {submitting ? t("publishing") : t("publish")}
                 </button>
               </div>
             </form>
@@ -94,11 +96,11 @@ export default function Circulars() {
         )}
 
         <div className="bg-white border border-slate-200 rounded p-6">
-          <h2 className="font-semibold text-slate-800 mb-4">Circulars</h2>
+          <h2 className="font-semibold text-slate-800 mb-4">{t("circulars")}</h2>
           {!circulars ? (
-            <p className="text-sm text-slate-500">Loading...</p>
+            <p className="text-sm text-slate-500">{t("loading")}</p>
           ) : circulars.length === 0 ? (
-            <p className="text-sm text-slate-500">No circulars yet.</p>
+            <p className="text-sm text-slate-500">{t("noCircularsYet")}</p>
           ) : (
             <div className="space-y-4">
               {circulars.map((c) => (
@@ -121,7 +123,7 @@ export default function Circulars() {
                             : "border-teal-700 text-teal-800 hover:bg-teal-50"
                         }`}
                       >
-                        {c.acknowledged ? "Acknowledged" : "Acknowledge"}
+                        {c.acknowledged ? t("acknowledged") : t("acknowledge")}
                       </button>
                     )}
                   </div>

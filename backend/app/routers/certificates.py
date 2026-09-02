@@ -81,7 +81,7 @@ def download_certificate_pdf(
     if certificate.status != "Approved":
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Certificate has not been issued yet")
 
-    pdf_bytes = build_certificate_pdf(employee, certificate)
+    pdf_bytes = build_certificate_pdf(employee, certificate, employee.preferred_language)
     filename = f"certificate-{certificate.certificate_number}.pdf"
     return Response(
         content=pdf_bytes,

@@ -52,9 +52,14 @@ class EmployeeOut(BaseModel):
     role: str
     gpf_series: str | None
     gpf_account_number: str | None
+    preferred_language: str
 
     class Config:
         from_attributes = True
+
+
+class LanguageUpdate(BaseModel):
+    language: str  # "en" | "hi"
 
 
 class ProfileUpdateRequest(BaseModel):

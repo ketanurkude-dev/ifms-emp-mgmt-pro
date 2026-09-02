@@ -36,7 +36,7 @@ export default function Otp() {
       sessionStorage.removeItem("pending_token");
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.detail || "OTP verification failed");
+      setError(err.response?.data?.detail || t("otpFailed"));
     } finally {
       setLoading(false);
     }
@@ -53,7 +53,7 @@ export default function Otp() {
 
         <div className="mb-6">
           <label className="block text-sm font-medium text-slate-700 mb-1.5" htmlFor="otp">
-            OTP
+            {t("otpLabel")}
           </label>
           <input
             id="otp"

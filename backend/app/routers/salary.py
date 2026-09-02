@@ -40,7 +40,7 @@ def download_salary_slip_pdf(
     if not slip.published_on:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="This month's slip is not published yet")
 
-    pdf_bytes = build_salary_slip_pdf(employee, slip)
+    pdf_bytes = build_salary_slip_pdf(employee, slip, employee.preferred_language)
     filename = f"salary-slip-{slip.month.strftime('%Y-%m')}.pdf"
     return Response(
         content=pdf_bytes,

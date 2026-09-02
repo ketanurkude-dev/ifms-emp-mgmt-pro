@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { get } from "../api/apiService";
+import { useLanguage } from "../i18n/LanguageContext";
 import AppLayout from "./AppLayout";
 
 export default function Faq() {
+  const { t } = useLanguage();
   const [faqs, setFaqs] = useState(null);
   const [search, setSearch] = useState("");
 
@@ -27,22 +29,22 @@ export default function Faq() {
   return (
     <AppLayout>
       <div className="bg-white border border-slate-200 rounded p-6">
-        <h1 className="font-semibold text-slate-800 mb-4">Frequently asked questions</h1>
+        <h1 className="font-semibold text-slate-800 mb-4">{t("faqTitle")}</h1>
 
         <input
           className="w-full max-w-md border border-slate-300 rounded px-3 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-teal-600"
-          placeholder="Search FAQs..."
+          placeholder={t("searchFaqs")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
 
         {!faqs ? (
-          <p className="text-sm text-slate-500">Loading...</p>
+          <p className="text-sm text-slate-500">{t("loading")}</p>
         ) : filtered.length === 0 ? (
           <div className="text-sm text-slate-500">
-            No matching FAQs.{" "}
+            {t("noMatchingFaqs")}{" "}
             <a href="/grievances" className="text-teal-800 font-medium">
-              Lodge a grievance instead
+              {t("lodgeGrievanceInstead")}
             </a>
           </div>
         ) : (

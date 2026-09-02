@@ -1,7 +1,10 @@
+import { useLanguage } from "../i18n/LanguageContext";
+
 // Status chip used across Requests, Certificates, Grievances and Profile.
 // Colour AND label both convey status, per the accessibility guideline
 // of never using colour alone.
 export function StatusChip({ status }) {
+  const { t } = useLanguage();
   const styles = {
     Submitted: "bg-amber-50 text-amber-700 border-amber-200",
     Approved: "bg-green-50 text-green-700 border-green-200",
@@ -13,7 +16,7 @@ export function StatusChip({ status }) {
   const style = styles[status] || "bg-slate-100 text-slate-600 border-slate-200";
   return (
     <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded border ${style}`}>
-      {status}
+      {t(`status_${status}`)}
     </span>
   );
 }

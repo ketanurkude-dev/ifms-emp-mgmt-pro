@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import { get, post, put } from "../api/apiService";
+import { useLanguage } from "../i18n/LanguageContext";
 import AppLayout from "./AppLayout";
 import { StatusChip } from "./StatusChip";
 
-const readOnlyFields = [
-  ["name", "Full name"],
-  ["designation", "Designation"],
-  ["office", "Office"],
-  ["ddo_code", "DDO code"],
-  ["basic_pay", "Basic pay"],
-];
-
 export default function Profile() {
+  const { t } = useLanguage();
+  const readOnlyFields = [
+    ["name", t("fullName")],
+    ["designation", t("designation")],
+    ["office", t("office")],
+    ["ddo_code", t("ddoCode")],
+    ["basic_pay", t("basicPay")],
+  ];
   const [employee, setEmployee] = useState(null);
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
@@ -47,10 +48,10 @@ export default function Profile() {
     setContactMessage("");
     try {
       await put("/profile/me", { email, mobile });
-      setContactMessage("Contact details updated.");
+      setContactMessage(t("contactUpdated"));
       loadProfile();
     } catch {
-      setContactMessage("Could not update contact details.");
+      setContactMessage(t("contactUpdateFailed"));
     } finally {
       setSavingContact(false);
     }
@@ -81,7 +82,7 @@ export default function Profile() {
   if (!employee) {
     return (
       <AppLayout>
-        <p className="text-slate-500 text-sm">Loading...</p>
+        <p className="text-slate-500 text-sm">{t("loading")}</p>
       </AppLayout>
     );
   }
@@ -91,13 +92,13 @@ export default function Profile() {
       <div className="space-y-6">
         {/* Editable contact details */}
         <div className="bg-white border border-slate-200 rounded p-6">
-          <h2 className="font-semibold text-slate-800 mb-1">Contact details</h2>
-          <p className="text-sm text-slate-500 mb-5">These can be updated directly.</p>
+          <h2 className="font-semibold text-slate-800 mb-1">{t("contactDetails")}</h2>
+          <p className="text-sm text-slate-500 mb-5">{t("contactDetailsSubtitle")}</p>
 
           <form onSubmit={handleSaveContact} className="grid sm:grid-cols-2 gap-4 max-w-lg">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5" htmlFor="email">
-                Email
+                {t("email")}
               </label>
               <input
                 id="email"
@@ -109,7 +110,7 @@ export default function Profile() {
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5" htmlFor="mobile">
-                Mobile
+                {t("mobile")}
               </label>
               <input
                 id="mobile"
@@ -125,7 +126,7 @@ export default function Profile() {
                 disabled={savingContact}
                 className="bg-teal-800 text-white px-4 py-2 rounded text-sm font-medium hover:bg-teal-900 disabled:opacity-60"
               >
-                {savingContact ? "Saving..." : "Save"}
+                {savingContact ? t("saving") : t("save")}
               </button>
               {contactMessage && <span className="text-sm text-slate-500">{contactMessage}</span>}
             </div>
@@ -134,10 +135,8 @@ export default function Profile() {
 
         {/* Read-only, request-to-change fields */}
         <div className="bg-white border border-slate-200 rounded p-6">
-          <h2 className="font-semibold text-slate-800 mb-1">Service particulars</h2>
-          <p className="text-sm text-slate-500 mb-5">
-            These need approval to change. Use "Request change" to raise a request.
-          </p>
+          <h2 className="font-semibold text-slate-800 mb-1">{t("serviceParticulars")}</h2>
+          <p className="text-sm text-slate-500 mb-5">{t("serviceParticularsSubtitle")}</p>
 
           <div className="divide-y divide-slate-200">
             {readOnlyFields.map(([key, label]) => {
@@ -153,7 +152,7 @@ export default function Profile() {
                       onClick={() => openRequestForm(key, value)}
                       className="text-sm text-teal-800 font-medium hover:text-teal-900"
                     >
-                      Request change
+                      {t("requestChange")}
                     </button>
                   </div>
 
@@ -163,7 +162,7 @@ export default function Profile() {
                       className="mt-4 bg-slate-50 border border-slate-200 rounded p-4 space-y-3"
                     >
                       <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">New value</label>
+                        <label className="block text-xs font-medium text-slate-600 mb-1">{t("newValue")}</label>
                         <input
                           className="w-full border border-slate-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600"
                           value={newValue}
@@ -172,7 +171,7 @@ export default function Profile() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">Reason</label>
+                        <label className="block text-xs font-medium text-slate-600 mb-1">{t("reason")}</label>
                         <input
                           className="w-full border border-slate-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600"
                           value={reason}
@@ -186,14 +185,14 @@ export default function Profile() {
                           disabled={submitting}
                           className="bg-teal-800 text-white px-3 py-1.5 rounded text-sm font-medium hover:bg-teal-900 disabled:opacity-60"
                         >
-                          Submit request
+                          {t("submitRequest")}
                         </button>
                         <button
                           type="button"
                           onClick={() => setOpenField(null)}
                           className="border border-slate-300 px-3 py-1.5 rounded text-sm text-slate-600 hover:bg-slate-100"
                         >
-                          Cancel
+                          {t("cancel")}
                         </button>
                       </div>
                     </form>
@@ -206,18 +205,18 @@ export default function Profile() {
 
         {/* Change request history */}
         <div className="bg-white border border-slate-200 rounded p-6">
-          <h2 className="font-semibold text-slate-800 mb-4">Change request history</h2>
+          <h2 className="font-semibold text-slate-800 mb-4">{t("changeRequestHistory")}</h2>
           {changeRequests.length === 0 ? (
-            <p className="text-sm text-slate-500">No change requests yet.</p>
+            <p className="text-sm text-slate-500">{t("noChangeRequests")}</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-left text-xs uppercase tracking-wide text-slate-400 border-b border-slate-200">
-                    <th className="py-2 pr-4">Title</th>
-                    <th className="py-2 pr-4">Details</th>
-                    <th className="py-2 pr-4">Status</th>
-                    <th className="py-2">Raised on</th>
+                    <th className="py-2 pr-4">{t("title")}</th>
+                    <th className="py-2 pr-4">{t("details")}</th>
+                    <th className="py-2 pr-4">{t("status")}</th>
+                    <th className="py-2">{t("raisedOn")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -240,4 +239,3 @@ export default function Profile() {
     </AppLayout>
   );
 }
-

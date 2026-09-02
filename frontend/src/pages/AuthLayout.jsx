@@ -3,7 +3,7 @@ import { useLanguage } from "../i18n/LanguageContext";
 // Shared two-column layout for the login, OTP and register screens:
 // a branded left panel, and the form on the right.
 export default function AuthLayout({ title, subtitle, children }) {
-  const { t, language, toggleLanguage } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
 
   return (
     <div className="min-h-screen flex bg-slate-50">
@@ -21,17 +21,12 @@ export default function AuthLayout({ title, subtitle, children }) {
         </div>
 
         <div className="max-w-sm">
-          <h2 className="text-2xl font-semibold leading-snug mb-4">
-            One account for your service, salary and requests
-          </h2>
-          <p className="text-teal-100/80 text-sm leading-relaxed">
-            View salary slips, track your GPF balance, raise requests and
-            follow their approval status — all from a single secure account.
-          </p>
+          <h2 className="text-2xl font-semibold leading-snug mb-4">{t("heroTitle")}</h2>
+          <p className="text-teal-100/80 text-sm leading-relaxed">{t("heroBody")}</p>
         </div>
 
         <p className="text-xs text-teal-100/50">
-          &copy; {new Date().getFullYear()} {t("appName")}. For authorised use only.
+          &copy; {new Date().getFullYear()} {t("appName")}. {t("authorisedUse")}
         </p>
       </div>
 
@@ -45,7 +40,7 @@ export default function AuthLayout({ title, subtitle, children }) {
               <span className="font-semibold text-slate-800">{t("appName")}</span>
             </div>
             <button
-              onClick={toggleLanguage}
+              onClick={() => setLanguage(language === "en" ? "hi" : "en", false)}
               className="text-sm text-teal-800 border border-slate-300 px-3 py-1 rounded hover:bg-slate-50 ml-auto"
             >
               {language === "en" ? "हिन्दी" : "English"}
@@ -56,6 +51,11 @@ export default function AuthLayout({ title, subtitle, children }) {
           {subtitle && <p className="text-sm text-slate-500 mb-8">{subtitle}</p>}
 
           {children}
+
+          <div className="flex items-center justify-center gap-2 mt-10 text-xs text-slate-400">
+            <span>{t("developedBy")}</span>
+            <img src="/virtualgalaxy-logo.webp" alt="Virtual Galaxy" className="h-5" />
+          </div>
         </div>
       </div>
     </div>

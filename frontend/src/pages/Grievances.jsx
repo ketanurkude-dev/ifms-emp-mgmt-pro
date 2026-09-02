@@ -1,14 +1,30 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { get, post } from "../api/apiService";
+import { useLanguage } from "../i18n/LanguageContext";
 import AppLayout from "./AppLayout";
 import { StatusChip } from "./StatusChip";
 
 const categories = ["Salary", "Allowance", "Deduction", "GPF", "Loan", "Income tax", "Service matter", "Certificate", "Pension", "Portal", "Other"];
 
+const CATEGORY_KEYS = {
+  Salary: "grCat_salary",
+  Allowance: "grCat_allowance",
+  Deduction: "grCat_deduction",
+  GPF: "grCat_gpf",
+  Loan: "grCat_loan",
+  "Income tax": "grCat_incomeTax",
+  "Service matter": "grCat_serviceMatter",
+  Certificate: "grCat_certificate",
+  Pension: "grCat_pension",
+  Portal: "grCat_portal",
+  Other: "grCat_other",
+};
+
 const emptyForm = { category: categories[0], subject: "", description: "" };
 
 export default function Grievances() {
+  const { t } = useLanguage();
   const location = useLocation();
   // Some pages (e.g. GPF "Report discrepancy") link here with a pre-filled
   // draft via router state, so the user doesn't retype what's already known.
@@ -56,10 +72,10 @@ export default function Grievances() {
     <AppLayout>
       <div className="space-y-6">
         <div className="bg-white border border-slate-200 rounded p-6">
-          <h1 className="font-semibold text-slate-800 mb-1">Lodge a grievance</h1>
+          <h1 className="font-semibold text-slate-800 mb-1">{t("lodgeGrievance")}</h1>
           <form onSubmit={handleSubmit} className="grid sm:grid-cols-2 gap-4 max-w-2xl mt-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Category</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">{t("category")}</label>
               <select
                 className="w-full border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"
                 value={form.category}
@@ -67,13 +83,13 @@ export default function Grievances() {
               >
                 {categories.map((c) => (
                   <option key={c} value={c}>
-                    {c}
+                    {t(CATEGORY_KEYS[c]) || c}
                   </option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Subject</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">{t("subject")}</label>
               <input
                 className="w-full border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"
                 value={form.subject}
@@ -82,7 +98,7 @@ export default function Grievances() {
               />
             </div>
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Description</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">{t("description")}</label>
               <textarea
                 rows={3}
                 className="w-full border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"
@@ -97,30 +113,30 @@ export default function Grievances() {
                 disabled={submitting}
                 className="bg-teal-800 text-white px-4 py-2 rounded text-sm font-medium hover:bg-teal-900 disabled:opacity-60"
               >
-                {submitting ? "Submitting..." : "Submit grievance"}
+                {submitting ? t("submitting") : t("submitGrievance")}
               </button>
             </div>
           </form>
         </div>
 
         <div className="bg-white border border-slate-200 rounded p-6">
-          <h2 className="font-semibold text-slate-800 mb-4">My grievances</h2>
+          <h2 className="font-semibold text-slate-800 mb-4">{t("myGrievances")}</h2>
           {!grievances ? (
-            <p className="text-sm text-slate-500">Loading...</p>
+            <p className="text-sm text-slate-500">{t("loading")}</p>
           ) : grievances.length === 0 ? (
-            <p className="text-sm text-slate-500">No grievances lodged yet.</p>
+            <p className="text-sm text-slate-500">{t("noGrievancesYet")}</p>
           ) : (
             <div className="space-y-4">
               {grievances.map((g) => (
                 <div key={g.id} className="border border-slate-200 rounded p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">{g.category}</p>
+                      <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">{t(CATEGORY_KEYS[g.category]) || g.category}</p>
                       <h3 className="font-medium text-slate-800">{g.subject}</h3>
                       <p className="text-sm text-slate-600 mt-1">{g.description}</p>
                       {g.reply && (
                         <div className="mt-3 bg-slate-50 border border-slate-200 rounded p-3">
-                          <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">Reply</p>
+                          <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">{t("reply")}</p>
                           <p className="text-sm text-slate-700">{g.reply}</p>
                         </div>
                       )}
@@ -131,10 +147,10 @@ export default function Grievances() {
                   {g.status === "Closed" && (
                     <div className="mt-3 flex items-center gap-4">
                       {g.rating ? (
-                        <span className="text-sm text-slate-500">Rated {g.rating}/5</span>
+                        <span className="text-sm text-slate-500">{t("ratedOutOf5").replace("{n}", g.rating)}</span>
                       ) : (
                         <div className="flex items-center gap-1 text-sm text-slate-500">
-                          Rate:
+                          {t("rate")}
                           {[1, 2, 3, 4, 5].map((n) => (
                             <button
                               key={n}
@@ -149,12 +165,12 @@ export default function Grievances() {
                       <button
                         onClick={() => handleReopen(g.id)}
                         disabled={reopenDisabled(g)}
-                        title={reopenDisabled(g) ? "Reopen window (30 days) has passed" : ""}
+                        title={reopenDisabled(g) ? t("reopenWindowPassed") : ""}
                         className={`text-sm font-medium ${
                           reopenDisabled(g) ? "text-slate-300 cursor-not-allowed" : "text-teal-800 hover:text-teal-900"
                         }`}
                       >
-                        Reopen (within 30 days)
+                        {t("reopenWithin30")}
                       </button>
                     </div>
                   )}

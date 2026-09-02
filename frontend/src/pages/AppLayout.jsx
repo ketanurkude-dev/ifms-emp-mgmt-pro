@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useCurrentEmployee } from "../api/useCurrentEmployee";
 import { useLanguage } from "../i18n/LanguageContext";
@@ -21,9 +21,16 @@ import {
 export default function AppLayout({ children }) {
   const navigate = useNavigate();
   const employee = useCurrentEmployee();
-  const { t, language, toggleLanguage } = useLanguage();
+  const { t, language, toggleLanguage, syncWithAccount } = useLanguage();
   const isApprover = employee && (employee.role === "ddo" || employee.role === "hod");
   const [sidebarVisible, setSidebarVisible] = useState(true);
+
+  useEffect(() => {
+    if (employee?.preferred_language) {
+      syncWithAccount(employee.preferred_language);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [employee?.preferred_language]);
 
   const navItems = [
     { to: "/dashboard", label: t("navDashboard"), Icon: DashboardIcon },
@@ -62,8 +69,8 @@ export default function AppLayout({ children }) {
             <button
               onClick={() => setSidebarVisible(!sidebarVisible)}
               className="mr-1 p-1.5 rounded hover:bg-white/10"
-              aria-label="Toggle sidebar"
-              title="Toggle sidebar"
+              aria-label={t("toggleSidebar")}
+              title={t("toggleSidebar")}
             >
               <div className="w-5 h-0.5 bg-white mb-1" />
               <div className="w-5 h-0.5 bg-white mb-1" />
@@ -74,9 +81,12 @@ export default function AppLayout({ children }) {
             </div>
             <span className="font-semibold text-sm">{t("appName")}</span>
             {employee && (
-              <span className="text-xs text-teal-100/70 border border-white/20 rounded px-2 py-0.5 ml-2">
-                {employee.role}
-              </span>
+              <>
+                <span className="text-sm text-white/90 ml-3 hidden sm:inline">{employee.name}</span>
+                <span className="text-xs text-teal-100/70 border border-white/20 rounded px-2 py-0.5 ml-2">
+                  {t(`role_${employee.role}`)}
+                </span>
+              </>
             )}
           </div>
           <div className="flex items-center gap-3">
@@ -121,6 +131,11 @@ export default function AppLayout({ children }) {
           <div className="max-w-5xl mx-auto">{children}</div>
         </main>
       </div>
+
+      <footer className="shrink-0 bg-white border-t border-slate-200 px-4 sm:px-6 py-2 flex items-center justify-end gap-2 text-xs text-slate-400">
+        <span>{t("developedBy")}</span>
+        <img src="/virtualgalaxy-logo.webp" alt="Virtual Galaxy" className="h-5" />
+      </footer>
     </div>
   );
 }

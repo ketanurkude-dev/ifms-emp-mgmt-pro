@@ -105,7 +105,7 @@ def download_tax_document_pdf(
     if not document.issued_on:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Document has not been issued yet")
 
-    pdf_bytes = build_tax_document_pdf(employee, document)
+    pdf_bytes = build_tax_document_pdf(employee, document, employee.preferred_language)
     filename = f"{document.doc_type.replace(' ', '-').lower()}-{document.financial_year}.pdf"
     return Response(
         content=pdf_bytes,

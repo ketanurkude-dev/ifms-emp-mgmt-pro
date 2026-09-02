@@ -40,6 +40,7 @@ class Employee(AuditMixin, Base):
     role: Mapped[str] = mapped_column(String(20), default="employee", nullable=False)
     gpf_series: Mapped[str | None] = mapped_column(String(30), nullable=True)
     gpf_account_number: Mapped[str | None] = mapped_column(String(30), nullable=True)
+    preferred_language: Mapped[str] = mapped_column(String(5), default="en", nullable=False)  # "en" | "hi"
 
 
 class SalarySlip(AuditMixin, Base):

@@ -39,7 +39,7 @@ def download_annual_statement_pdf(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No GPF ledger entries found")
 
     year_label = f"{entries[0].month.strftime('%b %Y')} to {entries[-1].month.strftime('%b %Y')}"
-    pdf_bytes = build_gpf_annual_statement_pdf(employee, entries, year_label)
+    pdf_bytes = build_gpf_annual_statement_pdf(employee, entries, year_label, employee.preferred_language)
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { downloadFile, get } from "../api/apiService";
+import { useLanguage } from "../i18n/LanguageContext";
 import AppLayout from "./AppLayout";
 
 const monthFormatter = new Intl.DateTimeFormat("en-IN", { month: "short", year: "numeric" });
@@ -9,6 +10,7 @@ function formatMonth(dateStr) {
 }
 
 export default function Salary() {
+  const { t } = useLanguage();
   const [slips, setSlips] = useState(null);
   const [selected, setSelected] = useState(null);
 
@@ -22,7 +24,7 @@ export default function Salary() {
   if (!slips) {
     return (
       <AppLayout>
-        <p className="text-slate-500 text-sm">Loading...</p>
+        <p className="text-slate-500 text-sm">{t("loading")}</p>
       </AppLayout>
     );
   }
@@ -31,18 +33,18 @@ export default function Salary() {
     <AppLayout>
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-white border border-slate-200 rounded p-6">
-          <h1 className="font-semibold text-slate-800 mb-1">Salary slips</h1>
-          <p className="text-sm text-slate-500 mb-5">Last 12 months. Click a month to see the breakup.</p>
+          <h1 className="font-semibold text-slate-800 mb-1">{t("salarySlips")}</h1>
+          <p className="text-sm text-slate-500 mb-5">{t("salarySlipsSubtitle")}</p>
 
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-left text-xs uppercase tracking-wide text-slate-400 border-b border-slate-200">
-                  <th className="py-2 pr-4">Month</th>
-                  <th className="py-2 pr-4 text-right">Gross</th>
-                  <th className="py-2 pr-4 text-right">Deductions</th>
-                  <th className="py-2 pr-4 text-right">Net</th>
-                  <th className="py-2">Status</th>
+                  <th className="py-2 pr-4">{t("month")}</th>
+                  <th className="py-2 pr-4 text-right">{t("gross")}</th>
+                  <th className="py-2 pr-4 text-right">{t("deductions")}</th>
+                  <th className="py-2 pr-4 text-right">{t("net")}</th>
+                  <th className="py-2">{t("status")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -60,11 +62,11 @@ export default function Salary() {
                         <td className="py-3 pr-4 text-right tabular-nums">Rs. {slip.gross}</td>
                         <td className="py-3 pr-4 text-right tabular-nums">Rs. {slip.deductions}</td>
                         <td className="py-3 pr-4 text-right tabular-nums font-medium">Rs. {slip.net}</td>
-                        <td className="py-3 text-slate-500">Published {slip.published_on}</td>
+                        <td className="py-3 text-slate-500">{t("published")} {slip.published_on}</td>
                       </>
                     ) : (
                       <td colSpan={4} className="py-3 text-slate-500 italic">
-                        Will be published after bill passing.
+                        {t("willBePublished")}
                       </td>
                     )}
                   </tr>
@@ -77,7 +79,7 @@ export default function Salary() {
         <div className="bg-white border border-slate-200 rounded p-6">
           <div className="flex items-start justify-between mb-1">
             <h2 className="font-semibold text-slate-800">
-              {selected ? formatMonth(selected.month) : "Component break-up"}
+              {selected ? formatMonth(selected.month) : t("componentBreakup")}
             </h2>
             {selected && (
               <button
@@ -86,29 +88,29 @@ export default function Salary() {
                 }
                 className="text-xs font-medium text-teal-800 border border-teal-700 rounded px-2.5 py-1 hover:bg-teal-50 shrink-0"
               >
-                Download PDF
+                {t("downloadPdf")}
               </button>
             )}
           </div>
           {!selected ? (
-            <p className="text-sm text-slate-500">Select a published month to see the break-up.</p>
+            <p className="text-sm text-slate-500">{t("selectPublishedMonth")}</p>
           ) : (
             <div className="text-sm">
-              <p className="text-xs uppercase tracking-wide text-slate-400 mt-4 mb-2">Earnings</p>
-              <Row label="Basic pay" value={selected.basic_pay} />
-              <Row label="Dearness allowance" value={selected.dearness_allowance} />
-              <Row label="House rent allowance" value={selected.house_rent_allowance} />
-              <Row label="Transport allowance" value={selected.transport_allowance} />
-              <Row label="Gross" value={selected.gross} bold />
+              <p className="text-xs uppercase tracking-wide text-slate-400 mt-4 mb-2">{t("earnings")}</p>
+              <Row label={t("basicPay")} value={selected.basic_pay} />
+              <Row label={t("dearnessAllowance")} value={selected.dearness_allowance} />
+              <Row label={t("houseRentAllowance")} value={selected.house_rent_allowance} />
+              <Row label={t("transportAllowance")} value={selected.transport_allowance} />
+              <Row label={t("gross")} value={selected.gross} bold />
 
-              <p className="text-xs uppercase tracking-wide text-slate-400 mt-5 mb-2">Deductions</p>
-              <Row label="GPF subscription" value={selected.gpf_subscription} />
-              <Row label="Income tax" value={selected.income_tax} />
-              <Row label="Professional tax" value={selected.professional_tax} />
-              <Row label="Total deductions" value={selected.deductions} bold />
+              <p className="text-xs uppercase tracking-wide text-slate-400 mt-5 mb-2">{t("deductions")}</p>
+              <Row label={t("gpfSubscription")} value={selected.gpf_subscription} />
+              <Row label={t("incomeTax")} value={selected.income_tax} />
+              <Row label={t("professionalTax")} value={selected.professional_tax} />
+              <Row label={t("totalDeductions")} value={selected.deductions} bold />
 
               <div className="border-t border-slate-200 mt-4 pt-3 flex items-center justify-between">
-                <span className="font-semibold text-slate-800">Net pay</span>
+                <span className="font-semibold text-slate-800">{t("netPay")}</span>
                 <span className="font-semibold text-slate-800 tabular-nums">Rs. {selected.net}</span>
               </div>
             </div>
