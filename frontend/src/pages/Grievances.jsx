@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { get, post } from "../api/apiService";
 import { useLanguage } from "../i18n/LanguageContext";
 import AppLayout from "./AppLayout";
+import ApplicationDateField from "./ApplicationDateField";
 import { StatusChip } from "./StatusChip";
 
 const categories = ["Salary", "Allowance", "Deduction", "GPF", "Loan", "Income tax", "Service matter", "Certificate", "Pension", "Portal", "Other"];
@@ -74,6 +75,7 @@ export default function Grievances() {
         <div className="bg-white border border-slate-200 rounded p-6">
           <h1 className="font-semibold text-slate-800 mb-1">{t("lodgeGrievance")}</h1>
           <form onSubmit={handleSubmit} className="grid sm:grid-cols-2 gap-4 max-w-2xl mt-4">
+            <ApplicationDateField />
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">{t("category")}</label>
               <select
@@ -133,6 +135,7 @@ export default function Grievances() {
                     <div>
                       <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">{t(CATEGORY_KEYS[g.category]) || g.category}</p>
                       <h3 className="font-medium text-slate-800">{g.subject}</h3>
+                      <p className="text-xs text-slate-400 mt-0.5">{t("raisedOn")}: {g.server_date?.slice(0, 10)}</p>
                       <p className="text-sm text-slate-600 mt-1">{g.description}</p>
                       {g.reply && (
                         <div className="mt-3 bg-slate-50 border border-slate-200 rounded p-3">

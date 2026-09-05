@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.auth import get_current_employee
 from app.database import get_db
+from app.events import log_action
 from app.models import Employee, EmployeeRequest
 from app.schemas import EmployeeOut, ProfileUpdateRequest, RequestCreate, RequestOut
 
@@ -21,10 +22,16 @@ def update_my_profile(
     db: Session = Depends(get_db),
 ):
     # Contact details (email, mobile) can be changed directly.
+    before = f"email={employee.email}, mobile={employee.mobile}"
     employee.email = payload.email
     employee.mobile = payload.mobile
     db.commit()
     db.refresh(employee)
+    log_action(
+        db, employee_id=employee.id, actor_id=employee.id, actor_role=employee.role, action="Profile updated",
+        entity_type="Employee", entity_id=employee.id, before_value=before, after_value=f"email={employee.email}, mobile={employee.mobile}",
+    )
+    db.commit()
     return employee
 
 
@@ -46,6 +53,8 @@ def raise_change_request(
     db.add(request)
     db.commit()
     db.refresh(request)
+    log_action(db, employee_id=employee.id, actor_id=employee.id, actor_role=employee.role, action="Profile change requested", entity_type="EmployeeRequest", entity_id=request.id)
+    db.commit()
     return request
 
 

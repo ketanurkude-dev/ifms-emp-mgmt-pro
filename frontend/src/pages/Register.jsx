@@ -62,6 +62,15 @@ export default function Register() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div>
+            <label className={labelClass}>{t("applicationDate")}</label>
+            <input
+              type="text"
+              value={new Date().toISOString().slice(0, 10)}
+              readOnly
+              className={`${inputClass} bg-slate-50 text-slate-500 cursor-not-allowed`}
+            />
+          </div>
+          <div>
             <label className={labelClass} htmlFor="employee_code">{t("employeeCode")}</label>
             <input id="employee_code" name="employee_code" className={inputClass} value={form.employee_code} onChange={handleChange} required />
           </div>

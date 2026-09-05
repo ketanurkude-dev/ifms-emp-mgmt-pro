@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.auth import get_current_employee, require_approver
 from app.database import get_db
+from app.events import log_action
 from app.models import Employee, Grievance
 from app.schemas import GrievanceCreate, GrievanceOut, GrievanceRating, GrievanceReply
 
@@ -41,6 +42,8 @@ def lodge_grievance(
     db.add(grievance)
     db.commit()
     db.refresh(grievance)
+    log_action(db, employee_id=employee.id, actor_id=employee.id, actor_role=employee.role, action="Grievance lodged", entity_type="Grievance", entity_id=grievance.id, after_value=payload.category)
+    db.commit()
     return grievance
 
 
@@ -64,6 +67,8 @@ def rate_grievance(
     grievance.rating = payload.rating
     db.commit()
     db.refresh(grievance)
+    log_action(db, employee_id=employee.id, actor_id=employee.id, actor_role=employee.role, action="Grievance rated", entity_type="Grievance", entity_id=grievance.id, after_value=str(payload.rating))
+    db.commit()
     return grievance
 
 
@@ -93,6 +98,8 @@ def reopen_grievance(
     grievance.reply = None
     db.commit()
     db.refresh(grievance)
+    log_action(db, employee_id=employee.id, actor_id=employee.id, actor_role=employee.role, action="Grievance reopened", entity_type="Grievance", entity_id=grievance.id)
+    db.commit()
     return grievance
 
 
@@ -131,4 +138,6 @@ def reply_to_grievance(
 
     db.commit()
     db.refresh(grievance)
+    log_action(db, employee_id=grievance.employee_id, actor_id=approver.id, actor_role=approver.role, action=f"Grievance {payload.status.lower()}", entity_type="Grievance", entity_id=grievance.id, after_value=payload.status, details=payload.reply)
+    db.commit()
     return grievance

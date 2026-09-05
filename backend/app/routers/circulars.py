@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.auth import get_current_employee, require_approver
 from app.database import get_db
+from app.events import log_action
 from app.models import Circular, CircularAcknowledgement, Employee
 from app.schemas import CircularCreate, CircularOut
 
@@ -55,6 +56,8 @@ def create_circular(
     db.add(circular)
     db.commit()
     db.refresh(circular)
+    log_action(db, employee_id=None, actor_id=approver.id, actor_role=approver.role, action="Circular published", entity_type="Circular", entity_id=circular.id, after_value=payload.title)
+    db.commit()
     return circular
 
 
@@ -77,5 +80,6 @@ def acknowledge_circular(
         return {"message": "Already acknowledged"}
 
     db.add(CircularAcknowledgement(circular_id=circular_id, employee_id=employee.id))
+    log_action(db, employee_id=employee.id, actor_id=employee.id, actor_role=employee.role, action="Circular acknowledged", entity_type="Circular", entity_id=circular_id)
     db.commit()
     return {"message": "Acknowledged"}

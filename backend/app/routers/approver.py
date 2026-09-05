@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.auth import require_approver
 from app.database import get_db
+from app.events import log_action
 from app.models import Certificate, Employee, EmployeeRequest
 from app.schemas import ApproverQueueItem, ReviewRequest
 
@@ -38,7 +39,11 @@ def get_queue(
                 id=req.id,
                 employee_id=req.employee_id,
                 employee_name=employee.name if employee else "Unknown",
+                employee_designation=employee.designation if employee else None,
+                employee_office=employee.office if employee else None,
                 title=f"{req.request_type}: {req.title}",
+                description=req.description,
+                amount=float(req.amount) if req.amount is not None else None,
                 status=req.status,
                 server_date=req.server_date,
             )
@@ -56,7 +61,10 @@ def get_queue(
                 id=cert.id,
                 employee_id=cert.employee_id,
                 employee_name=employee.name if employee else "Unknown",
+                employee_designation=employee.designation if employee else None,
+                employee_office=employee.office if employee else None,
                 title=f"Certificate: {cert.certificate_type}",
+                description=cert.purpose,
                 status=cert.status,
                 server_date=cert.server_date,
             )
@@ -97,5 +105,10 @@ def review_item(
         item.certificate_number = f"CERT/{datetime.utcnow().year}/{item.id:06d}"
         item.issued_on = datetime.utcnow().date()
 
+    db.commit()
+    log_action(
+        db, employee_id=item.employee_id, actor_id=approver.id, actor_role=approver.role, action=f"{kind.capitalize()} {payload.status.lower()}",
+        entity_type=model.__name__, entity_id=item.id, before_value="Submitted", after_value=payload.status, details=payload.review_remarks,
+    )
     db.commit()
     return {"message": f"{kind.capitalize()} {payload.status.lower()}"}

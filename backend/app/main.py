@@ -6,6 +6,7 @@ from app.database import Base, SessionLocal, engine
 from app.models import Faq
 from app.routers import (
     approver,
+    audit,
     auth,
     certificates,
     circulars,
@@ -15,6 +16,7 @@ from app.routers import (
     grievances,
     pension,
     profile,
+    reports,
     requests,
     salary,
     tax,
@@ -56,6 +58,8 @@ app.include_router(grievances.router)
 app.include_router(tax.router)
 app.include_router(pension.router)
 app.include_router(faq.router)
+app.include_router(reports.router)
+app.include_router(audit.router)
 
 
 @app.get("/")

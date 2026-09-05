@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { get, post, put } from "../api/apiService";
 import { useLanguage } from "../i18n/LanguageContext";
 import AppLayout from "./AppLayout";
+import ApplicationDateField from "./ApplicationDateField";
 import { StatusChip } from "./StatusChip";
 
 export default function Profile() {
@@ -161,6 +162,7 @@ export default function Profile() {
                       onSubmit={(e) => handleSubmitRequest(e, label, value)}
                       className="mt-4 bg-slate-50 border border-slate-200 rounded p-4 space-y-3"
                     >
+                      <ApplicationDateField />
                       <div>
                         <label className="block text-xs font-medium text-slate-600 mb-1">{t("newValue")}</label>
                         <input

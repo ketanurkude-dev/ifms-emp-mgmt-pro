@@ -183,3 +183,23 @@ class Faq(AuditMixin, Base):
     category: Mapped[str] = mapped_column(String(60), nullable=False)
     question: Mapped[str] = mapped_column(Text, nullable=False)
     answer: Mapped[str] = mapped_column(Text, nullable=False)
+
+
+class AuditLog(AuditMixin, Base):
+    """Immutable trail of significant actions -- logins, OTP events, and
+    every create/update/approve/reject across the portal."""
+
+    __tablename__ = "audit_logs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    employee_id: Mapped[int | None] = mapped_column(ForeignKey("employees.id"), nullable=True, index=True)
+    actor_id: Mapped[int | None] = mapped_column(ForeignKey("employees.id"), nullable=True)
+    actor_role: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    action: Mapped[str] = mapped_column(String(60), nullable=False)
+    entity_type: Mapped[str] = mapped_column(String(40), nullable=False)
+    entity_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    before_value: Mapped[str | None] = mapped_column(Text, nullable=True)
+    after_value: Mapped[str | None] = mapped_column(Text, nullable=True)
+    result: Mapped[str] = mapped_column(String(20), default="Success", nullable=False)
+    correlation_id: Mapped[str | None] = mapped_column(String(60), nullable=True)
+    details: Mapped[str | None] = mapped_column(Text, nullable=True)

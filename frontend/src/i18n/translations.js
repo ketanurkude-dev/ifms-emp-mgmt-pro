@@ -68,6 +68,9 @@ export const I18N = {
     navGrievance: "Grievance",
     navCirculars: "Circulars",
     navFaq: "FAQ",
+    navReports: "Reports",
+    navAuditLog: "Audit log",
+    selectAReport: "Select a report",
     navApprover: "Approver",
 
     dashboardWelcome: "Welcome to your employee dashboard",
@@ -91,6 +94,7 @@ export const I18N = {
     details: "Details",
     status: "Status",
     raisedOn: "Raised on",
+    applicationDate: "Application date",
 
     salarySlips: "Salary slips",
     salarySlipsSubtitle: "Last 12 months. Click a month to see the breakup.",
@@ -154,6 +158,7 @@ export const I18N = {
     myCertificates: "My certificates",
     noCertificatesYet: "No certificates requested yet.",
     certificateNo: "Certificate no.",
+    requestedOn: "Requested on",
     issuedOn: "Issued on",
     download: "Download",
     certType_experience: "Experience",
@@ -321,6 +326,9 @@ export const I18N = {
     navGrievance: "शिकायत",
     navCirculars: "परिपत्र",
     navFaq: "सामान्य प्रश्न",
+    navReports: "रिपोर्ट",
+    navAuditLog: "ऑडिट लॉग",
+    selectAReport: "एक रिपोर्ट चुनें",
     navApprover: "अनुमोदक",
 
     dashboardWelcome: "आपके कर्मचारी डैशबोर्ड में आपका स्वागत है",
@@ -344,6 +352,7 @@ export const I18N = {
     details: "विवरण",
     status: "स्थिति",
     raisedOn: "उठाया गया",
+    applicationDate: "आवेदन तिथि",
 
     salarySlips: "वेतन पर्चियां",
     salarySlipsSubtitle: "पिछले 12 महीने। विवरण देखने के लिए किसी माह पर क्लिक करें।",
@@ -407,6 +416,7 @@ export const I18N = {
     myCertificates: "मेरे प्रमाण पत्र",
     noCertificatesYet: "अभी तक कोई प्रमाण पत्र नहीं मांगा गया।",
     certificateNo: "प्रमाण पत्र संख्या",
+    requestedOn: "अनुरोध तिथि",
     issuedOn: "जारी तिथि",
     download: "डाउनलोड करें",
     certType_experience: "अनुभव",

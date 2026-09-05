@@ -264,6 +264,29 @@ class ApproverQueueItem(BaseModel):
     id: int
     employee_id: int
     employee_name: str
+    employee_designation: str | None = None
+    employee_office: str | None = None
     title: str
+    description: str | None = None
+    amount: float | None = None
     status: str
     server_date: datetime
+
+
+class AuditLogOut(BaseModel):
+    id: int
+    employee_id: int | None
+    actor_id: int | None
+    actor_role: str | None
+    action: str
+    entity_type: str
+    entity_id: int | None
+    before_value: str | None
+    after_value: str | None
+    result: str
+    correlation_id: str | None
+    details: str | None
+    server_date: datetime
+
+    class Config:
+        from_attributes = True

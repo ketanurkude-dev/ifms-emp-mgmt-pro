@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { get, post } from "../api/apiService";
 import { useLanguage } from "../i18n/LanguageContext";
 import AppLayout from "./AppLayout";
+import ApplicationDateField from "./ApplicationDateField";
 import { StatusChip } from "./StatusChip";
 
 const requestTypes = [
@@ -86,6 +87,7 @@ export default function Requests() {
           )}
 
           <form onSubmit={handleSubmit} className="grid sm:grid-cols-2 gap-4 max-w-2xl">
+            <ApplicationDateField />
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5" htmlFor="request_type">
                 {t("type")}

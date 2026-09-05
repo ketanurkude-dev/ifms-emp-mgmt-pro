@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.auth import get_current_employee
 from app.database import get_db
+from app.events import log_action
 from app.models import Employee, EmployeeRequest
 from app.schemas import RequestCreate, RequestOut
 
@@ -61,6 +62,8 @@ def create_request(
     db.add(request)
     db.commit()
     db.refresh(request)
+    log_action(db, employee_id=employee.id, actor_id=employee.id, actor_role=employee.role, action="Request submitted", entity_type="EmployeeRequest", entity_id=request.id, after_value=payload.request_type)
+    db.commit()
     return request
 
 
@@ -83,4 +86,6 @@ def withdraw_request(
     request.status = "Withdrawn"
     db.commit()
     db.refresh(request)
+    log_action(db, employee_id=employee.id, actor_id=employee.id, actor_role=employee.role, action="Request withdrawn", entity_type="EmployeeRequest", entity_id=request.id)
+    db.commit()
     return request

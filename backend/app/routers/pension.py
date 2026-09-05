@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.auth import get_current_employee, require_approver
 from app.database import get_db
+from app.events import log_action
 from app.models import Employee, PensionCase
 from app.schemas import PensionCaseOut
 
@@ -50,4 +51,6 @@ def advance_stage(
         case.forms_completion_percent = round((current_index + 2) / len(STAGES) * 100)
         db.commit()
         db.refresh(case)
+        log_action(db, employee_id=employee_id, actor_id=approver.id, actor_role=approver.role, action="Pension case advanced", entity_type="PensionCase", entity_id=case.id, after_value=case.stage)
+        db.commit()
     return case

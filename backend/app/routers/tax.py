@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.auth import get_current_employee
 from app.database import get_db
+from app.events import log_action
 from app.models import Employee, TaxDeclarationLine, TaxDocument
 from app.pdf import build_tax_document_pdf
 from app.schemas import TaxDeclarationLineCreate, TaxDeclarationLineOut, TaxDocumentOut
@@ -73,6 +74,8 @@ def add_declaration(
     db.add(line)
     db.commit()
     db.refresh(line)
+    log_action(db, employee_id=employee.id, actor_id=employee.id, actor_role=employee.role, action="Tax declaration added", entity_type="TaxDeclarationLine", entity_id=line.id, after_value=f"{payload.section}: {payload.declared_amount}")
+    db.commit()
     return line
 
 

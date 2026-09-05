@@ -13,6 +13,8 @@ import Grievances from "./pages/Grievances";
 import Tax from "./pages/Tax";
 import Pension from "./pages/Pension";
 import Faq from "./pages/Faq";
+import Reports from "./pages/Reports";
+import AuditLog from "./pages/AuditLog";
 import Approver from "./pages/Approver";
 
 function RequireAuth({ children }) {
@@ -32,6 +34,8 @@ const protectedRoutes = [
   { path: "/tax", element: <Tax /> },
   { path: "/pension", element: <Pension /> },
   { path: "/faq", element: <Faq /> },
+  { path: "/reports", element: <Reports /> },
+  { path: "/audit-log", element: <AuditLog /> },
   { path: "/approver", element: <Approver /> },
 ];
 

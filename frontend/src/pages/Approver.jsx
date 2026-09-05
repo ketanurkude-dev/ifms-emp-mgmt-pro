@@ -114,6 +114,7 @@ export default function Approver() {
                 <div key={g.id} className="border border-slate-200 rounded p-4">
                   <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">{g.category}</p>
                   <h3 className="font-medium text-slate-800">{g.subject}</h3>
+                  <p className="text-xs text-slate-400 mt-1">{t("raisedOn")} {g.server_date.slice(0, 10)}</p>
                   <p className="text-sm text-slate-600 mt-1">{g.description}</p>
 
                   <textarea

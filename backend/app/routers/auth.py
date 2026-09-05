@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.auth import create_token, decode_token, hash_password, verify_password
+from app.auth import create_token, decode_token, get_current_employee, hash_password, verify_password
 from app.config import settings
 from app.database import get_db
+from app.events import log_action
 from app.models import ROLES, Employee
 from app.schemas import LoginRequest, LoginResponse, RegisterRequest, TokenResponse, VerifyOtpRequest
 from app.seed import build_gpf_ledger, build_salary_slips, build_tax_documents
@@ -46,6 +47,7 @@ def register(payload: RegisterRequest, db: Session = Depends(get_db)):
     db.add_all(build_salary_slips(employee.id, float(employee.basic_pay)))
     db.add_all(build_gpf_ledger(employee.id, float(employee.basic_pay)))
     db.add_all(build_tax_documents(employee.id))
+    log_action(db, employee_id=employee.id, actor_id=employee.id, actor_role=role, action="Registered", entity_type="Employee", entity_id=employee.id)
     db.commit()
 
     return {"message": "Registration successful. You can now log in."}
@@ -59,11 +61,20 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
         .first()
     )
     if not employee or not verify_password(payload.password, employee.password_hash):
+        log_action(
+            db, employee_id=employee.id if employee else None, actor_id=employee.id if employee else None,
+            actor_role=employee.role if employee else None, action="Failed login", entity_type="Employee",
+            entity_id=employee.id if employee else None, result="Failure",
+            details=f"Attempted login for {payload.employee_code}",
+        )
+        db.commit()
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid employee code or password")
     if not employee.is_active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account is inactive")
 
     pending_token = create_token(employee.employee_code, purpose="otp_pending", expires_minutes=5)
+    log_action(db, employee_id=employee.id, actor_id=employee.id, actor_role=employee.role, action="Password verified", entity_type="Employee", entity_id=employee.id)
+    db.commit()
     return LoginResponse(pending_token=pending_token)
 
 
@@ -84,4 +95,13 @@ def verify_otp(payload: VerifyOtpRequest, db: Session = Depends(get_db)):
     access_token = create_token(
         employee.employee_code, purpose="access", expires_minutes=settings.access_token_expire_minutes
     )
+    log_action(db, employee_id=employee.id, actor_id=employee.id, actor_role=employee.role, action="Login", entity_type="Employee", entity_id=employee.id)
+    db.commit()
     return TokenResponse(access_token=access_token)
+
+
+@router.post("/logout")
+def logout(employee: Employee = Depends(get_current_employee), db: Session = Depends(get_db)):
+    log_action(db, employee_id=employee.id, actor_id=employee.id, actor_role=employee.role, action="Logout", entity_type="Employee", entity_id=employee.id)
+    db.commit()
+    return {"message": "Logged out"}

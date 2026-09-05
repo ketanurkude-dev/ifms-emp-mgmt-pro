@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.auth import get_current_employee
 from app.database import get_db
+from app.events import log_action
 from app.models import Certificate, Employee
 from app.pdf import build_certificate_pdf
 from app.schemas import CertificateCreate, CertificateOut, CertificateVerifyOut
@@ -38,6 +39,8 @@ def request_certificate(
     db.add(certificate)
     db.commit()
     db.refresh(certificate)
+    log_action(db, employee_id=employee.id, actor_id=employee.id, actor_role=employee.role, action="Certificate requested", entity_type="Certificate", entity_id=certificate.id, after_value=payload.certificate_type)
+    db.commit()
     return certificate
 
 

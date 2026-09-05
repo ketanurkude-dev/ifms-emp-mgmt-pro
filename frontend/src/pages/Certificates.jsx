@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { downloadFile, get, post } from "../api/apiService";
 import { useLanguage } from "../i18n/LanguageContext";
 import AppLayout from "./AppLayout";
+import ApplicationDateField from "./ApplicationDateField";
 import { StatusChip } from "./StatusChip";
 
 const certTypes = ["Experience", "Service verification", "NOC", "Salary certificate", "Last pay certificate"];
@@ -50,6 +51,7 @@ export default function Certificates() {
           <p className="text-sm text-slate-500 mb-5">{t("requestCertificateSubtitle")}</p>
 
           <form onSubmit={handleSubmit} className="grid sm:grid-cols-2 gap-4 max-w-2xl">
+            <ApplicationDateField />
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5" htmlFor="certificate_type">
                 {t("type")}
@@ -106,6 +108,7 @@ export default function Certificates() {
                     <th className="py-2 pr-4">{t("type")}</th>
                     <th className="py-2 pr-4">{t("purpose")}</th>
                     <th className="py-2 pr-4">{t("status")}</th>
+                    <th className="py-2 pr-4">{t("requestedOn")}</th>
                     <th className="py-2 pr-4">{t("certificateNo")}</th>
                     <th className="py-2 pr-4">{t("issuedOn")}</th>
                     <th className="py-2"></th>
@@ -119,6 +122,7 @@ export default function Certificates() {
                       <td className="py-2 pr-4">
                         <StatusChip status={c.status} />
                       </td>
+                      <td className="py-2 pr-4">{c.server_date?.slice(0, 10)}</td>
                       <td className="py-2 pr-4">{c.certificate_number || "-"}</td>
                       <td className="py-2 pr-4">{c.issued_on || "-"}</td>
                       <td className="py-2">

@@ -4,6 +4,7 @@ import { useCurrentEmployee } from "../api/useCurrentEmployee";
 import { useLanguage } from "../i18n/LanguageContext";
 import {
   ApproverIcon,
+  AuditIcon,
   CertificateIcon,
   CircularsIcon,
   DashboardIcon,
@@ -12,6 +13,7 @@ import {
   GrievanceIcon,
   PensionIcon,
   ProfileIcon,
+  ReportIcon,
   RequestsIcon,
   SalaryIcon,
   TaxIcon,
@@ -44,6 +46,7 @@ export default function AppLayout({ children }) {
     { to: "/grievances", label: t("navGrievance"), Icon: GrievanceIcon },
     { to: "/circulars", label: t("navCirculars"), Icon: CircularsIcon },
     { to: "/faq", label: t("navFaq"), Icon: FaqIcon },
+    { to: "/reports", label: t("navReports"), Icon: ReportIcon },
   ];
 
   function handleLogout() {
@@ -118,10 +121,16 @@ export default function AppLayout({ children }) {
                 </NavLink>
               ))}
               {isApprover && (
-                <NavLink to="/approver" className={approverLinkClass}>
-                  <ApproverIcon style={{ width: 18, height: 18 }} className="shrink-0" />
-                  {t("navApprover")}
-                </NavLink>
+                <>
+                  <NavLink to="/approver" className={approverLinkClass}>
+                    <ApproverIcon style={{ width: 18, height: 18 }} className="shrink-0" />
+                    {t("navApprover")}
+                  </NavLink>
+                  <NavLink to="/audit-log" className={approverLinkClass}>
+                    <AuditIcon style={{ width: 18, height: 18 }} className="shrink-0" />
+                    {t("navAuditLog")}
+                  </NavLink>
+                </>
               )}
             </nav>
           </aside>
