@@ -6,8 +6,8 @@ Modeled on real GNCTD SRS documents for a self-service employee portal (leave/ad
 grievances/GPF/tax/pension-initiation).
 
 ## Stack & ports
-- Backend: FastAPI + SQLAlchemy 2.0 (`Mapped`/`mapped_column`) + PostgreSQL. Runs on **:8000**.
-- Frontend: React (Vite) + Tailwind CSS (strictly Tailwind, no inline CSS). Runs on **:5173**.
+- Backend: FastAPI + SQLAlchemy 2.0 (`Mapped`/`mapped_column`) + PostgreSQL. Runs on **:9001**.
+- Frontend: React (Vite) + Tailwind CSS (strictly Tailwind, no inline CSS). Runs on **:7001**.
 - DB: `postgresql+psycopg2://emp_portal:emp_portal@localhost:5432/emp_portal` (see `backend/.env`).
 - No migrations tool -- `Base.metadata.create_all()` on startup creates missing tables only. New
   columns on existing tables need a manual `ALTER TABLE` (see e.g. vendor_mgmt's `stored_path`).
